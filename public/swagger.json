@@ -1,0 +1,190 @@
+{
+	"components": {
+		"examples": {},
+		"headers": {},
+		"parameters": {},
+		"requestBodies": {},
+		"responses": {},
+		"schemas": {
+			"SuccessResp": {
+				"properties": {
+					"status": {
+						"type": "number",
+						"format": "double"
+					},
+					"message": {
+						"type": "string"
+					},
+					"data": {}
+				},
+				"required": [
+					"status",
+					"message"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"ErrorResp": {
+				"properties": {
+					"status": {
+						"type": "number",
+						"format": "double"
+					},
+					"message": {
+						"type": "string"
+					},
+					"error": {}
+				},
+				"required": [
+					"status",
+					"message"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"Type": {
+				"enum": [
+					"Investors",
+					"Asset listers"
+				],
+				"type": "string"
+			},
+			"WaitLister": {
+				"properties": {
+					"type": {
+						"$ref": "#/components/schemas/Type",
+						"description": "The type would be able to accomodate two types of waitlisters:\nInvestors\nAsset listers"
+					},
+					"fullName": {
+						"type": "string"
+					},
+					"email": {
+						"type": "string"
+					},
+					"description": {
+						"type": "string"
+					}
+				},
+				"required": [
+					"type",
+					"fullName",
+					"email"
+				],
+				"type": "object",
+				"additionalProperties": false
+			}
+		},
+		"securitySchemes": {}
+	},
+	"info": {
+		"title": "waitlistapi",
+		"version": "1.0.0",
+		"license": {
+			"name": "ISC"
+		},
+		"contact": {}
+	},
+	"openapi": "3.0.0",
+	"paths": {
+		"/api/register": {
+			"post": {
+				"operationId": "SignUp",
+				"responses": {
+					"201": {
+						"description": "Created",
+						"content": {
+							"application/json": {
+								"schema": {
+									"anyOf": [
+										{
+											"$ref": "#/components/schemas/SuccessResp"
+										},
+										{
+											"$ref": "#/components/schemas/ErrorResp"
+										}
+									]
+								},
+								"examples": {
+									"Example 1": {
+										"value": {
+											"status": 201,
+											"message": "Successfully added to the waitlist",
+											"data": {
+												"fullName": "Ridwan Onikoyi",
+												"email": "onikoyiridwan@gmail.com",
+												"type": "Investors",
+												"description": null,
+												"id": "778a100d-9c11-4d78-9de0-f9ba1064975a",
+												"createdAt": "2022-01-30T22:09:04.055Z",
+												"updatedAt": "2022-01-30T22:09:04.055Z"
+											}
+										}
+									}
+								}
+							}
+						}
+					},
+					"409": {
+						"description": "Email already exists",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResp"
+								},
+								"examples": {
+									"Example 1": {
+										"value": {
+											"status": 409,
+											"message": "Email already exists",
+											"error": {
+												"email": "Email already exists"
+											}
+										}
+									}
+								}
+							}
+						}
+					},
+					"422": {
+						"description": "Validation Failed",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResp"
+								},
+								"examples": {
+									"Example 1": {
+										"value": {
+											"status": 422,
+											"message": "Validation error",
+											"error": [
+												"type must be one of [Investors, Asset listers]"
+											]
+										}
+									}
+								}
+							}
+						}
+					}
+				},
+				"security": [],
+				"parameters": [],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/WaitLister"
+							}
+						}
+					}
+				}
+			}
+		}
+	},
+	"servers": [
+		{
+			"url": "/"
+		}
+	]
+}
